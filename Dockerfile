@@ -1,5 +1,5 @@
 # Fase de Construcción
-FROM node:20-alpine AS builder
+FROM node:20 AS builder
 
 WORKDIR /app
 
@@ -22,7 +22,7 @@ ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN npm run build
 
 # Fase de Producción (Servidor)
-FROM node:20
+FROM node:20-alpine
 
 WORKDIR /app
 

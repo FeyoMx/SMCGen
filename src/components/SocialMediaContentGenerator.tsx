@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import Button from './Button';
 import LoadingSpinner from './LoadingSpinner';
@@ -161,7 +159,7 @@ const SocialMediaContentGenerator: React.FC = () => {
                 <div className="mt-4">
                   <p className="font-medium text-gray-700 dark:text-gray-300">Fuentes:</p>
                   <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-400">
-                    {groundedContent.groundingUrls.map((url, index) => (
+                    {groundedContent.groundingUrls.map((url: string, index: number) => (
                       <li key={index}>
                         <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline dark:text-blue-400">
                           {url}
@@ -188,10 +186,10 @@ const SocialMediaContentGenerator: React.FC = () => {
                   <div className="flex items-center mb-1">
                     <p className="font-medium text-gray-700 dark:text-gray-300">Diálogos:</p>
                     {/* Changed to Markdown list format */}
-                    <CopyButton textToCopy={content.dialogues.map(d => `- ${d}`).join('\n')} copyKey="dialogues" label="diálogos" className="ml-2" />
+                    <CopyButton textToCopy={content.dialogues.map((d: string) => `- ${d}`).join('\n')} copyKey="dialogues" label="diálogos" className="ml-2" />
                   </div>
                   <ul className="list-disc list-inside bg-gray-100 dark:bg-gray-900 p-3 rounded-md border border-gray-200 dark:border-gray-600 text-gray-800 dark:text-gray-200">
-                    {content.dialogues.map((dialogue, index) => (
+                    {content.dialogues.map((dialogue: string, index: number) => (
                       <li key={index} className="mb-1">{dialogue}</li>
                     ))}
                   </ul>

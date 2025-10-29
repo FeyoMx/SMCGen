@@ -1,5 +1,5 @@
 # Fase de Construcción
-FROM node:20-alpine AS builder
+FROM node:20-alpine as builder
 
 WORKDIR /app
 
@@ -11,6 +11,10 @@ RUN npm install
 # Copiar el resto del código fuente
 COPY . .
 
+# Aceptar la API_KEY como argumento de construcción
+ARG API_KEY
+# Establecer la API_KEY como variable de entorno, necesaria para la fase de build de Vite
+ENV API_KEY=$API_KEY
 # Aumentar la memoria para Node.js durante la construcción (para evitar fallos de memoria con bundlers)
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 

@@ -1,6 +1,4 @@
-
-
-import { GoogleGenAI, Modality, FunctionDeclaration, Type, GenerateContentResponse } from '@google/genai';
+import { GoogleGenAI, Modality, Type, GenerateContentResponse } from '@google/genai';
 import {
   MODEL_IMAGE_GENERATION,
   MODEL_IMAGE_EDITING,
@@ -10,8 +8,11 @@ import { SocialMediaContent, SocialMediaContentWithGrounding } from '../types';
 
 // Helper to create a new GoogleGenAI instance on demand, ensuring latest API key is used
 const getGeminiClient = () => {
-  if (!process.env.API_KEY) {
-    throw new Error('API_KEY is not defined. Please ensure it is set in your environment.');
+  // Las pautas especifican usar process.env.API_KEY.
+  // Vite lo inyecta como una cadena literal en el bundle del cliente en tiempo de construcción.
+  // En el entorno de construcción (Docker), el API_KEY se pasa como ENV.
+  if (typeof process.env.API_KEY === 'undefined' || process.env.API_KEY === '') {
+    throw new Error('API_KEY no está definido. Asegúrate de que está configurado en tu entorno de construcción/ejecución.');
   }
   return new GoogleGenAI({ apiKey: process.env.API_KEY });
 };
@@ -81,8 +82,8 @@ export async function editImage(base64Image: string, prompt: string): Promise<st
   });
 
   const editedImagePart = response.candidates?.[0]?.content?.parts?.[0]?.inlineData;
-  if (!editedImagePart) {
-    throw new Error('No se recibió ninguna imagen editada del modelo.');
+  if (!editedImagePart || !editedImagePart.data) { // Añadir comprobación para editedImagePart.data
+    throw new Error('No se recibió ninguna imagen editada del modelo o los datos de la imagen son nulos.');
   }
 
   return `data:${editedImagePart.mimeType};base64,${editedImagePart.data}`;
@@ -178,6 +179,7 @@ export async function generateSocialMediaContentWithGrounding(theme: string): Pr
     }
   }
 
+  // Comprobar si response.text es indefinido y proporcionar un valor predeterminado si es necesario.
   const textOutput = response.text || "No se generó contenido de texto.";
 
   return {

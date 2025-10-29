@@ -36,7 +36,9 @@ jobs:
 
       - name: 'Build and push Docker image to Artifact Registry'
         run: |
-          docker build -t ${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REGISTRY_REPOSITORY}/${SERVICE_NAME}:${{ github.sha }} .
+          docker build \
+            --build-arg API_KEY="${{ secrets.GEMINI_API_KEY }}" \
+            -t ${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REGISTRY_REPOSITORY}/${SERVICE_NAME}:${{ github.sha }} .
           docker push ${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REGISTRY_REPOSITORY}/${SERVICE_NAME}:${{ github.sha }}
 
       - name: 'Deploy to Cloud Run'
@@ -46,7 +48,7 @@ jobs:
           region: ${{ env.REGION }}
           image: ${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REGISTRY_REPOSITORY}/${SERVICE_NAME}:${{ github.sha }}
           env_vars: |
-            API_KEY=${{ secrets.GEMINI_API_KEY }} # Pasa la API Key como variable de entorno
+            API_KEY=${{ secrets.GEMINI_API_KEY }} # Pasa la API Key como variable de entorno al servicio de Cloud Run (runtime)
           no_allow_unauthenticated: true # Permite acceso no autenticado al servicio de Cloud Run (comenta esta línea si quieres que sea privado)
           # Puedes añadir otras configuraciones de Cloud Run aquí, por ejemplo:
           # concurrency: 80

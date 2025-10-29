@@ -1,0 +1,26 @@
+
+{
+  "name": "generador-redes-sociales",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Una aplicación con IA para generar contenido de redes sociales, incluyendo descripciones, diálogos, hashtags e imágenes a partir de un único tema, optimizado para WhatsApp y Facebook. Aprovecha las capacidades generativas de Gemini.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@google/genai": "^1.27.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.23.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "typescript": "^5.2.2",
+    "vite": "^5.3.1"
+  }
+}

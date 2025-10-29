@@ -1,0 +1,6 @@
+
+{
+  "name": "Generador de Contenido para Redes Sociales",
+  "description": "Una aplicación con IA para generar contenido de redes sociales, incluyendo descripciones, diálogos, hashtags e imágenes a partir de un único tema, optimizado para WhatsApp y Facebook. Aprovecha las capacidades generativas de Gemini.",
+  "requestFramePermissions": []
+}

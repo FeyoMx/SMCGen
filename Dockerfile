@@ -1,5 +1,5 @@
 # Fase de Construcción
-FROM node:20-alpine as builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -10,6 +10,9 @@ RUN npm install
 
 # Copiar el resto del código fuente
 COPY . .
+
+# Aumentar la memoria para Node.js durante la construcción (para evitar fallos de memoria con bundlers)
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 
 # Construir la aplicación
 RUN npm run build

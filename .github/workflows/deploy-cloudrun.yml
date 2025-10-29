@@ -9,11 +9,14 @@ env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   SERVICE_NAME: ${{ secrets.CLOUD_RUN_SERVICE_NAME }} # Ej: generador-de-contenido-para-redes-sociales
   REGION: ${{ secrets.GCP_REGION }} # Ej: us-west1
-  ARTIFACT_REGISTRY_REPOSITORY: 'cloud-run-repo' # Puedes cambiarlo si ya tienes uno, o se creará.
+  ARTIFACT_REGISTRY_REPOSITORY: ${{ secrets.ARTIFACT_REGISTRY_REPOSITORY }} # Ej: cloud-run-repo
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write' # Necesario para la autenticación en Google Cloud
 
     steps:
       - name: Checkout repository
@@ -29,9 +32,9 @@ jobs:
         uses: 'google-github-actions/setup-gcloud@v1'
 
       - name: 'Configure Docker to use Artifact Registry'
-        run: gcloud auth configure-docker ${GCP_REGION}-docker.pkg.dev
+        run: gcloud auth configure-docker ${REGION}-docker.pkg.dev
 
-      - name: 'Build and push Docker image'
+      - name: 'Build and push Docker image to Artifact Registry'
         run: |
           docker build -t ${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REGISTRY_REPOSITORY}/${SERVICE_NAME}:${{ github.sha }} .
           docker push ${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REGISTRY_REPOSITORY}/${SERVICE_NAME}:${{ github.sha }}
@@ -44,11 +47,9 @@ jobs:
           image: ${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REGISTRY_REPOSITORY}/${SERVICE_NAME}:${{ github.sha }}
           env_vars: |
             API_KEY=${{ secrets.GEMINI_API_KEY }} # Pasa la API Key como variable de entorno
-          # Si necesitas más configuraciones para Cloud Run, añádelas aquí.
-          # Por ejemplo:
-          # no_allow_unauthenticated: false # Permite acceso no autenticado (si tu servicio es público)
+          no_allow_unauthenticated: true # Permite acceso no autenticado al servicio de Cloud Run (comenta esta línea si quieres que sea privado)
+          # Puedes añadir otras configuraciones de Cloud Run aquí, por ejemplo:
           # concurrency: 80
           # cpu: 1
           # memory: 512Mi
           # timeout: 300
-    

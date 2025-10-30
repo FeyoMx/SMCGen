@@ -82,8 +82,8 @@ export async function editImage(base64Image: string, prompt: string): Promise<st
   });
 
   const editedImagePart = response.candidates?.[0]?.content?.parts?.[0]?.inlineData;
-  if (!editedImagePart || !editedImagePart.data) { // Añadir comprobación para editedImagePart.data
-    throw new Error('No se recibió ninguna imagen editada del modelo o los datos de la imagen son nulos.');
+  if (!editedImagePart || typeof editedImagePart.data !== 'string' || typeof editedImagePart.mimeType !== 'string') {
+    throw new Error('No se recibió ninguna imagen editada del modelo o los datos/tipo MIME de la imagen son nulos/inválidos.');
   }
 
   return `data:${editedImagePart.mimeType};base64,${editedImagePart.data}`;
@@ -180,7 +180,7 @@ export async function generateSocialMediaContentWithGrounding(theme: string): Pr
   }
 
   // Comprobar si response.text es indefinido y proporcionar un valor predeterminado si es necesario.
-  const textOutput = response.text || "No se generó contenido de texto.";
+  const textOutput: string = response.text || "No se generó contenido de texto.";
 
   return {
     text: textOutput,

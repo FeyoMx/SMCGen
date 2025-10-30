@@ -46,10 +46,10 @@ jobs:
         with:
           service: ${{ env.SERVICE_NAME }}
           region: ${{ env.REGION }}
-          image: ${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REGISTRY_REPOSITORY}/${SERVICE_NAME}:${{ github.sha }}
+          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY_REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
           env_vars: |
             API_KEY=${{ secrets.GEMINI_API_KEY }} # Pasa la API Key como variable de entorno al servicio de Cloud Run (runtime)
-          no_allow_unauthenticated: true # Permite acceso no autenticado al servicio de Cloud Run (comenta esta línea si quieres que sea privado)
+          allow_unauthenticated: true # Permite acceso no autenticado al servicio de Cloud Run
           # Puedes añadir otras configuraciones de Cloud Run aquí, por ejemplo:
           # concurrency: 80
           # cpu: 1

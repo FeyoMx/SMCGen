@@ -1,4 +1,4 @@
-import { GoogleGenAI, Modality, Type, GenerateContentResponse } from '@google/genai';
+import { GoogleGenAI, Modality, Type } from '@google/genai';
 import {
   MODEL_IMAGE_GENERATION,
   MODEL_IMAGE_EDITING,
@@ -36,12 +36,11 @@ export async function generateImage(prompt: string): Promise<string> {
     },
   });
 
-  if (!response.generatedImages || response.generatedImages.length === 0) {
-    throw new Error('No se generaron imágenes.');
+  const base64Image = response.generatedImages?.[0]?.image;
+  if (!base64Image) {
+    throw new Error('No se generaron imágenes o los datos de la imagen son inválidos.');
   }
-
-  const base64ImageBytes: string = response.generatedImages[0].image.imageBytes;
-  return `data:image/jpeg;base64,${base64ImageBytes}`;
+  return `data:image/jpeg;base64,${base64Image}`;
 }
 
 /**
@@ -61,7 +60,7 @@ export async function editImage(base64Image: string, prompt: string): Promise<st
   const mimeType = mimeMatch[1];
   const data = base64Image.split(',')[1];
 
-  const response = await ai.models.generateContent({
+  const result = await ai.models.generateContent({
     model: MODEL_IMAGE_EDITING,
     contents: {
       parts: [
@@ -81,7 +80,7 @@ export async function editImage(base64Image: string, prompt: string): Promise<st
     },
   });
 
-  const editedImagePart = response.candidates?.[0]?.content?.parts?.[0]?.inlineData;
+  const editedImagePart = result.candidates?.[0]?.content?.parts?.[0]?.inlineData;
   if (!editedImagePart || typeof editedImagePart.data !== 'string' || typeof editedImagePart.mimeType !== 'string') {
     throw new Error('No se recibió ninguna imagen editada del modelo o los datos/tipo MIME de la imagen son nulos/inválidos.');
   }
@@ -108,7 +107,7 @@ export async function generateSocialMediaContent(theme: string): Promise<SocialM
       "hashtags": ["string", "string", ...]
     }`;
 
-  const response = await ai.models.generateContent({
+  const result = await ai.models.generateContent({
     model: MODEL_TEXT_FAST,
     contents: prompt,
     config: {
@@ -136,7 +135,7 @@ export async function generateSocialMediaContent(theme: string): Promise<SocialM
     },
   });
 
-  const jsonString = response.text.trim();
+  const jsonString = (result.text ?? '').trim();
   try {
     const parsedContent = JSON.parse(jsonString);
     return parsedContent as SocialMediaContent;
@@ -160,7 +159,7 @@ export async function generateSocialMediaContentWithGrounding(theme: string): Pr
     Asegura que la información esté actualizada y sea precisa utilizando la Búsqueda de Google.
     Prioriza las mejores prácticas de marketing para WhatsApp y Facebook.`;
 
-  const response: GenerateContentResponse = await ai.models.generateContent({
+  const result = await ai.models.generateContent({
     model: MODEL_TEXT_FAST,
     contents: prompt,
     config: {
@@ -168,7 +167,7 @@ export async function generateSocialMediaContentWithGrounding(theme: string): Pr
     },
   });
 
-  const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
+  const groundingChunks = result.candidates?.[0]?.groundingMetadata?.groundingChunks;
   const groundingUrls: string[] = [];
 
   if (groundingChunks) {
@@ -180,7 +179,7 @@ export async function generateSocialMediaContentWithGrounding(theme: string): Pr
   }
 
   // Comprobar si response.text es indefinido y proporcionar un valor predeterminado si es necesario.
-  const textOutput: string = response.text || "No se generó contenido de texto.";
+  const textOutput: string = result.text ?? "No se generó contenido de texto.";
 
   return {
     text: textOutput,

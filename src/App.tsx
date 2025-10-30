@@ -5,7 +5,6 @@ import SocialMediaContentGenerator from './components/SocialMediaContentGenerato
 import ImageEditor from './components/ImageEditor';
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>('text-image-generator');
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     // Inicializar el modo oscuro desde localStorage o por defecto a falso
     const savedMode = localStorage.getItem('darkMode');
@@ -33,7 +32,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
-        <Header activeTab={activeTab} setActiveTab={setActiveTab} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+        <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
         <main className="flex-grow p-4 lg:p-8">
           <Routes>
             <Route path="/" element={<SocialMediaContentGenerator />} />

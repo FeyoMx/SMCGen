@@ -3,13 +3,11 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 interface HeaderProps {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
   darkMode: boolean;
   toggleDarkMode: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, darkMode, toggleDarkMode }) => {
+const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
   const tabs = [
     { name: 'Contenido y Imagen', path: '/text-image-generator', key: 'text-image-generator' },
     { name: 'Editor de Imágenes', path: '/image-editor', key: 'image-editor' },
@@ -30,7 +28,6 @@ const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, darkMode, togg
                 `px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200
                 ${isActive ? 'bg-white text-blue-700 shadow-md dark:bg-blue-200 dark:text-blue-800' : 'text-white hover:bg-blue-500/70'}`
               }
-              onClick={() => setActiveTab(tab.key)}
             >
               {tab.name}
             </NavLink>

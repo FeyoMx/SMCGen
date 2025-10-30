@@ -1,0 +1,1 @@
+{"root":["./vite.config.ts","./src/app.tsx","./src/constants.ts","./src/main.tsx","./src/types.ts","./src/components/button.tsx","./src/components/header.tsx","./src/components/imageeditor.tsx","./src/components/loadingspinner.tsx","./src/components/socialmediacontentgenerator.tsx","./src/services/geminiservice.ts","./src/utils/fileutils.ts"],"version":"5.9.3"}
